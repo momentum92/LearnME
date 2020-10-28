@@ -1,6 +1,3 @@
-# LearnME
-A quick Vue.js project for enabling users to learn a sequence of characters or numbers i.e. cellphone number.
-
 # rememberme
 
 ## Project setup
@@ -25,4 +22,3 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
