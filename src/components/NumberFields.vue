@@ -1,49 +1,59 @@
 <template>
+  <v-container fill-height fluid>
     <v-row align="center" justify="center">
-        <template v-for="(number, index) in numbers">
-          <v-col cols="12" sm="1" md="1" lg="1" :key="index">
-            <v-text-field class="centered-input"
-                          :rules=rules.validate(number.value)
-                          :placeholder="getPlaceholder(number)"
-                          oninput="if(this.value.length > 1) this.value = this.value[this.value.length-1]"/>
-          </v-col>
-        </template>
+      <v-col cols="2" sm="2" :key="index" v-for="(number, index) in numbers">
+        <v-text-field class="centered-input"
+                      ref="inputField"
+                      :rules=rules.validate(number.value)
+                      :placeholder="getPlaceholder(number)"
+                      oninput="if(this.value.length > 1) this.value = this.value[this.value.length-1]"
+                      @input="moveToNextField(number.value, index)"/>
+      </v-col>
     </v-row>
+  </v-container>
 </template>
 
 <script>
-  export default {
-    name: 'NumberFields',
-    props: {
-      numbers: {
-        required: true,
-        type: Array
+export default {
+  name: 'NumberFields',
+  props: {
+    numbers: {
+      required: true,
+      type: Array
+    },
+    reveal: {
+      required: true,
+      type: Boolean
+    }
+  },
+  data: () => ({
+    rules: {
+      validate(val) {
+        return [
+          v => !!v || 'Required',
+          v => Number(v) === Number(val) || 'Incorrect value'
+        ];
       },
-      reveal: {
-        required: true,
-        type: Boolean
+    }
+  }),
+  methods: {
+    moveToNextField(correctVal, index) {
+      const nextIndex = index + 1;
+      const value = this.$refs.inputField[index].internalValue
+
+      if (value && Number(value) === correctVal && nextIndex < this.numbers.length) {
+        this.$refs.inputField[nextIndex].focus()
       }
     },
-    data: () => ({
-      rules: {
-        validate(val) {
-          return [
-              v => !!v || 'Required',
-              v => Number(v) === Number(val) || 'Incorrect value'
-          ];
-        },
-      }
-    }),
-    methods: {
-      getPlaceholder(number) {
-        return (!number.hidden || this.reveal) ? `${number.value}` : '?';
-      },
+    getPlaceholder(number) {
+      return (!number.hidden || this.reveal) ? `${number.value}` : '?';
     },
-  }
+  },
+}
 </script>
 
 <style scoped>
-  .centered-input >>> input {
-    text-align: center
-  }
+.centered-input >>> input {
+  text-align: center
+}
 </style>
